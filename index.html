@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0D9488">
+<title>GoIPpro Partner</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal: #0D9488;
+  --teal-dark: #0f766e;
+  --teal-light: #14b8a6;
+  --blue: #2563EB;
+  --bg: #0e1117;
+  --bg2: #1a1f2e;
+  --bg3: #242938;
+  --card: #1e2433;
+  --border: #2d3548;
+  --text: #f1f5f9;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --success: #10b981;
+  --error: #ef4444;
+  --warn: #f59e0b;
+}
+[data-theme="light"] {
+  --bg: #f0f9ff;
+  --bg2: #e0f2fe;
+  --bg3: #bae6fd;
+  --card: #ffffff;
+  --border: #bae6fd;
+  --text: #0f172a;
+  --text2: #475569;
+  --text3: #94a3b8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { 
+  height: 100%; 
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+#app { 
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+/* === NAV === */
+.nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 4px 8px;
+  cursor: pointer;
+  color: var(--text3);
+  font-size: 10px;
+  font-weight: 500;
+  gap: 3px;
+  min-height: 56px;
+  transition: color 0.2s;
+  border: none;
+  background: none;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.nav-item.active { color: var(--teal); }
+.nav-item svg { width: 22px; height: 22px; }
+/* === SCREENS === */
+.screen { 
+  display: none; 
+  flex: 1;
+  padding: 16px 16px 80px;
+  animation: fadeIn 0.2s ease;
+}
+.screen.active { display: flex; flex-direction: column; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+/* === HEADER === */
+.screen-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-top: 8px;
+}
+.logo { 
+  font-size: 22px; 
+  font-weight: 700;
+  color: var(--teal);
+  letter-spacing: -0.02em;
+}
+.badge {
+  background: var(--teal);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+/* === CARDS === */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-size: 13px;
+  color: var(--text2);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+/* === BUTTONS === */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  min-height: 52px;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.btn-primary { background: var(--teal); color: white; }
+.btn-primary:active { background: var(--teal-dark); transform: scale(0.98); }
+.btn-secondary { background: var(--bg3); color: var(--text); }
+.btn-secondary:active { opacity: 0.8; transform: scale(0.98); }
+.btn-outline { background: transparent; color: var(--teal); border: 1.5px solid var(--teal); }
+.btn-outline:active { background: rgba(13,148,136,0.1); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-sm { padding: 10px 16px; font-size: 14px; min-height: 44px; border-radius: 10px; }
+/* === INPUTS === */
+.input-group { margin-bottom: 16px; }
+.input-label { 
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  margin-bottom: 6px;
+}
+.input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 16px;
+  font-size: 16px;
+  color: var(--text);
+  font-family: inherit;
+  transition: border-color 0.2s;
+  min-height: 52px;
+}
+.input:focus { outline: none; border-color: var(--teal); }
+.input::placeholder { color: var(--text3); }
+select.input { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+/* === ONBOARDING === */
+.hero {
+  text-align: center;
+  padding: 32px 0 24px;
+}
+.hero-flag { font-size: 64px; margin-bottom: 16px; display: block; }
+.hero-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+.hero-title span { color: var(--teal); }
+.hero-sub { 
+  font-size: 16px;
+  color: var(--text2);
+  margin-bottom: 32px;
+}
+.features { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; text-align: left; }
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.feature-icon { font-size: 24px; flex-shrink: 0; }
+.feature-text { font-size: 15px; color: var(--text); font-weight: 500; }
+.feature-sub { font-size: 13px; color: var(--text2); }
+/* === CALCULATOR === */
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.slot-btn {
+  background: var(--bg3);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  text-align: center;
+  min-height: 52px;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slot-btn.active {
+  background: rgba(13,148,136,0.15);
+  border-color: var(--teal);
+  color: var(--teal);
+}
+.earnings-card {
+  background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.earnings-label { color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+.earnings-amount { color: white; font-size: 36px; font-weight: 700; line-height: 1; }
+.earnings-period { color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 4px; }
+/* === DASHBOARD === */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+.stat-label { font-size: 12px; color: var(--text2); font-weight: 500; margin-bottom: 4px; }
+.stat-value { font-size: 24px; font-weight: 700; color: var(--text); }
+.stat-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.action-list { display: flex; flex-direction: column; gap: 10px; }
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.action-item:active { border-color: var(--teal); }
+.action-icon { font-size: 24px; flex-shrink: 0; }
+.action-text { font-size: 16px; font-weight: 600; }
+.action-sub { font-size: 13px; color: var(--text2); margin-top: 2px; }
+.action-arrow { margin-left: auto; color: var(--text3); }
+/* === REFERRAL === */
+.ref-link-box {
+  background: var(--bg3);
+  border: 1.5px dashed var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  font-family: monospace;
+  font-size: 14px;
+  color: var(--text2);
+  word-break: break-all;
+  margin-bottom: 12px;
+}
+.copy-row { display: flex; gap: 10px; margin-bottom: 24px; }
+/* === STATUS === */
+.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.status-dot.online { background: var(--success); box-shadow: 0 0 6px var(--success); }
+.status-dot.offline { background: var(--text3); }
+/* === SUPPORT === */
+.faq-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.faq-question {
+  padding: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.faq-answer {
+  padding: 0 16px;
+  color: var(--text2);
+  font-size: 14px;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+.faq-answer.open { padding: 0 16px 16px; max-height: 200px; }
+.faq-chevron { color: var(--text3); transition: transform 0.3s; font-size: 18px; }
+.faq-chevron.open { transform: rotate(180deg); }
+/* === ALERTS === */
+.alert {
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.alert-error { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+.alert-success { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+/* === LOADING === */
+.spinner {
+  width: 24px; height: 24px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+/* === RTL === */
+[dir="rtl"] .nav-item { direction: rtl; }
+[dir="rtl"] select.input { background-position: left 14px center; padding-right: 16px; padding-left: 36px; }
+[dir="rtl"] .action-arrow { margin-left: 0; margin-right: auto; }
+/* === DIVIDER === */
+.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.section-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+.text-teal { color: var(--teal); }
+.text-muted { color: var(--text2); font-size: 14px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mb-12 { margin-bottom: 12px; }
+/* === AUTH TABS === */
+.tabs { display: flex; background: var(--bg3); border-radius: 10px; padding: 4px; margin-bottom: 24px; }
+.tab-btn { flex: 1; padding: 10px; border: none; background: none; color: var(--text2); font-size: 15px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+.tab-btn.active { background: var(--teal); color: white; }
+/* Radio */
+.radio-group { display: flex; gap: 10px; }
+.radio-btn { 
+  flex: 1; padding: 12px 8px; 
+  background: var(--bg3); border: 2px solid var(--border);
+  border-radius: 10px; text-align: center;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+  color: var(--text2);
+}
+.radio-btn.active { border-color: var(--teal); color: var(--teal); background: rgba(13,148,136,0.1); }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- SCREEN: HOME / ONBOARDING -->
+  <div id="screen-home" class="screen active">
+    <div class="screen-header">
+      <div class="logo">GoIPpro</div>
+      <span class="badge" id="lang-badge">EN</span>
+      <span id="header-flag" style="font-size:24px;margin-left:auto"></span>
+    </div>
+    <div class="hero">
+      <span class="hero-flag" id="hero-flag">🌍</span>
+      <div class="hero-title" id="hero-title">Earn <span>$300–$800</span>/month</div>
+      <div class="hero-sub" id="hero-sub">with your SIM cards + GoIP device</div>
+    </div>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">📞</div>
+        <div><div class="feature-text" id="feat1">Incoming calls only</div><div class="feature-sub" id="feat1s">No outgoing, no spam risk</div></div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <div><div class="feature-text" id="feat2">SIM stays safe</div><div class="feature-sub" id="feat2s">Grey traffic protection built-in</div></div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">💰</div>
+        <div><div class="feature-text" id="feat3">Paid in USDT</div><div class="feature-sub" id="feat3s">Monthly payouts, no limits</div></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="btn-calc" onclick="navigate('earn')">
+      <span id="btn-calc-text">💰 Calculate my earnings</span>
+    </button>
+    <button class="btn btn-outline mt-12" onclick="navigate('support')">
+      <span id="btn-howit-text">ℹ️ How it works</span>
+    </button>
+  </div>
+
+  <!-- SCREEN: CALCULATOR -->
+  <div id="screen-earn" class="screen">
+    <div class="section-title" id="calc-title">💰 Earnings Calculator</div>
+    <div class="card">
+      <div class="card-title" id="slots-label">SIM Slots</div>
+      <div class="slots-grid">
+        <div class="slot-btn active" onclick="selectSlots(4, this)">4</div>
+        <div class="slot-btn" onclick="selectSlots(8, this)">8</div>
+        <div class="slot-btn" onclick="selectSlots(16, this)">16</div>
+        <div class="slot-btn" onclick="selectSlots(32, this)">32</div>
+      </div>
+      <div class="card-title" id="country-label">Your Country</div>
+      <select class="input" id="calc-country" onchange="calcEarnings()">
+        <option value="nigeria">🇳🇬 Nigeria ($45–55/slot)</option>
+        <option value="ghana">🇬🇭 Ghana ($40–50/slot)</option>
+        <option value="kenya">🇰🇪 Kenya ($40–50/slot)</option>
+        <option value="uae">🇦🇪 UAE ($80–120/slot)</option>
+        <option value="saudi">🇸🇦 Saudi Arabia ($80–120/slot)</option>
+        <option value="bahrain">🇧🇭 Bahrain ($70–100/slot)</option>
+        <option value="indonesia">🇮🇩 Indonesia ($40–55/slot)</option>
+        <option value="philippines">🇵🇭 Philippines ($40–55/slot)</option>
+        <option value="brazil">🇧🇷 Brazil ($45–60/slot)</option>
+        <option value="mexico">🇲🇽 Mexico ($40–50/slot)</option>
+        <option value="colombia">🇨🇴 Colombia ($40–50/slot)</option>
+        <option value="ivory_coast">🇨🇮 Côte d'Ivoire ($40–50/slot)</option>
+        <option value="senegal">🇸🇳 Senegal ($40–50/slot)</option>
+        <option value="cameroon">🇨🇲 Cameroon ($38–48/slot)</option>
+        <option value="morocco">🇲🇦 Morocco ($45–55/slot)</option>
+        <option value="egypt">🇪🇬 Egypt ($35–45/slot)</option>
+        <option value="ethiopia">🇪🇹 Ethiopia ($30–40/slot)</option>
+        <option value="tanzania">🇹🇿 Tanzania ($35–45/slot)</option>
+        <option value="mozambique">🇲🇿 Mozambique ($30–40/slot)</option>
+        <option value="angola">🇦🇴 Angola ($35–45/slot)</option>
+        <option value="zambia">🇿🇲 Zambia ($30–40/slot)</option>
+        <option value="pakistan">🇵🇰 Pakistan ($35–50/slot)</option>
+        <option value="bangladesh">🇧🇩 Bangladesh ($30–45/slot)</option>
+      </select>
+    </div>
+    <div class="earnings-card">
+      <div class="earnings-label" id="monthly-label">Monthly income</div>
+      <div class="earnings-amount" id="earnings-amount">$180–$220</div>
+      <div class="earnings-period" id="per-month-text">per month · USDT</div>
+    </div>
+    <button class="btn btn-primary" onclick="navigate('register')">
+      <span id="btn-register-text">📝 Register &amp; Start</span>
+    </button>
+    <button class="btn btn-secondary mt-12" onclick="openLink('https://goippro.com/how-to-start/')">
+      <span id="btn-learn-text">🌐 Learn more at goippro.com</span>
+    </button>
+  </div>
+
+  <!-- SCREEN: REGISTER / LOGIN -->
+  <div id="screen-register" class="screen">
+    <div class="section-title" id="auth-title">Join GoIPpro</div>
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-signup" onclick="switchTab('signup')">Register</button>
+      <button class="tab-btn" id="tab-login" onclick="switchTab('login')">Login</button>
+    </div>
+    
+    <!-- SIGN UP FORM -->
+    <div id="form-signup">
+      <div id="signup-error" class="alert alert-error" style="display:none"></div>
+      <div class="input-group">
+        <label class="input-label" id="lbl-name">Your Name</label>
+        <input class="input" id="inp-name" type="text" placeholder="Chidi Okeke" autocomplete="name">
+      </div>
+      <div class="input-group">
+        <label class="input-label" id="lbl-email">Email</label>
+        <input class="input" id="inp-email" type="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="input-group">
+        <label class="input-label" id="lbl-country">Country</label>
+        <select class="input" id="inp-country">
+          <option value="Nigeria">🇳🇬 Nigeria</option>
+          <option value="Ghana">🇬🇭 Ghana</option>
+          <option value="Kenya">🇰🇪 Kenya</option>
+          <option value="UAE">🇦🇪 UAE</option>
+          <option value="Saudi Arabia">🇸🇦 Saudi Arabia</option>
+          <option value="Bahrain">🇧🇭 Bahrain</option>
+          <option value="Indonesia">🇮🇩 Indonesia</option>
+          <option value="Philippines">🇵🇭 Philippines</option>
+          <option value="Brazil">🇧🇷 Brazil</option>
+          <option value="Mexico">🇲🇽 Mexico</option>
+          <option value="Colombia">🇨🇴 Colombia</option>
+          <option value="Côte d'Ivoire">🇨🇮 Côte d'Ivoire</option>
+          <option value="Senegal">🇸🇳 Senegal</option>
+          <option value="Cameroon">🇨🇲 Cameroon</option>
+          <option value="Morocco">🇲🇦 Morocco</option>
+          <option value="Pakistan">🇵🇰 Pakistan</option>
+          <option value="Bangladesh">🇧🇩 Bangladesh</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label" id="lbl-phone">Phone / WhatsApp</label>
+        <input class="input" id="inp-phone" type="tel" placeholder="+234 800 000 0000" autocomplete="tel">
+      </div>
+      <div class="input-group">
+        <label class="input-label" id="lbl-password">Password</label>
+        <input class="input" id="inp-password" type="password" placeholder="8+ characters" autocomplete="new-password">
+      </div>
+      <div class="input-group">
+        <label class="input-label" id="lbl-device">Do you have a GoIP device?</label>
+        <div class="radio-group">
+          <div class="radio-btn active" id="radio-yes" onclick="selectDevice(true)">✅ Yes</div>
+          <div class="radio-btn" id="radio-no" onclick="selectDevice(false)">⏳ Plan to buy</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-signup" onclick="doSignup()">
+        <span id="btn-signup-text">Create Account →</span>
+      </button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="form-login" style="display:none">
+      <div id="login-error" class="alert alert-error" style="display:none"></div>
+      <div class="input-group">
+        <label class="input-label">Email</label>
+        <input class="input" id="login-email" type="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <input class="input" id="login-password" type="password" placeholder="Your password" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary" id="btn-login" onclick="doLogin()">
+        <span>Login →</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN: DASHBOARD -->
+  <div id="screen-dashboard" class="screen">
+    <div class="screen-header">
+      <div>
+        <div style="font-size:13px;color:var(--text2)" id="dash-greeting">👋 Welcome back!</div>
+        <div style="font-size:20px;font-weight:700" id="dash-name">Partner</div>
+      </div>
+      <div style="margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <span id="dash-country-flag" style="font-size:28px">🌍</span>
+        <span style="font-size:10px;color:var(--text3)" id="dash-since"></span>
+      </div>
+    </div>
+    <div id="dash-loading" style="text-align:center;padding:40px;color:var(--text2)">
+      <div class="spinner" style="border-color:rgba(13,148,136,0.3);border-top-color:var(--teal);margin:0 auto 12px"></div>
+      <div>Loading your data...</div>
+    </div>
+    <div id="dash-content" style="display:none">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label" id="lbl-balance">Balance</div>
+          <div class="stat-value text-teal" id="dash-balance">—</div>
+          <div class="stat-sub">USDT</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" id="lbl-this-month">This month</div>
+          <div class="stat-value" id="dash-month">—</div>
+          <div class="stat-sub" id="lbl-earned">earned</div>
+        </div>
+      </div>
+      <div class="card mb-12" style="padding:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span id="lbl-sims">Active SIMs</span>
+          <span id="dash-sims" style="font-weight:700">— / —</span>
+        </div>
+        <div style="margin-top:8px;display:flex;align-items:center">
+          <span class="status-dot online"></span>
+          <span style="font-size:14px;color:var(--text2)" id="lbl-online">Online</span>
+        </div>
+      </div>
+      <div class="action-list">
+        <div class="action-item" onclick="requestPayout()">
+          <div class="action-icon">💸</div>
+          <div><div class="action-text" id="act-payout">Request Payout</div><div class="action-sub" id="act-payout-sub">Withdraw to USDT wallet</div></div>
+          <div class="action-arrow">›</div>
+        </div>
+        <div class="action-item" onclick="navigate('refer')">
+          <div class="action-icon">🔗</div>
+          <div><div class="action-text" id="act-refer">Refer a Friend</div><div class="action-sub" id="act-refer-sub">Earn 5% monthly bonus</div></div>
+          <div class="action-arrow">›</div>
+        </div>
+        <div class="action-item" onclick="navigate('support')">
+          <div class="action-icon">💬</div>
+          <div><div class="action-text" id="act-support">Support</div><div class="action-sub">24/7 assistance</div></div>
+          <div class="action-arrow">›</div>
+        </div>
+        <div class="action-item" onclick="doLogout()">
+          <div class="action-icon">🚪</div>
+          <div><div class="action-text" id="act-logout">Logout</div></div>
+          <div class="action-arrow">›</div>
+        </div>
+      </div>
+    </div>
+    <!-- NOT LOGGED IN STATE -->
+    <div id="dash-anon" style="display:none;text-align:center;padding:40px 0">
+      <div style="font-size:48px;margin-bottom:16px">🔐</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:8px" id="dash-anon-title">Partner Dashboard</div>
+      <div style="color:var(--text2);margin-bottom:24px" id="dash-anon-sub">Login to see your earnings and statistics</div>
+      <button class="btn btn-primary" onclick="navigate('register')">
+        <span id="dash-anon-btn">Login / Register</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN: REFERRAL -->
+  <div id="screen-refer" class="screen">
+    <div class="section-title" id="ref-title">🔗 Refer &amp; Earn</div>
+    <div class="card" style="text-align:center;margin-bottom:20px">
+      <div style="font-size:40px;margin-bottom:12px">🎁</div>
+      <div style="font-size:22px;font-weight:700;margin-bottom:8px" id="ref-earn">Earn 5% bonus</div>
+      <div class="text-muted" id="ref-desc">For every friend you invite, you earn 5% of their monthly payouts for 12 months!</div>
+    </div>
+    <div id="ref-auth-needed" style="display:none">
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:16px" id="ref-login-msg">Login to get your referral link</div>
+        <button class="btn btn-outline" onclick="navigate('register')">
+          <span>Login / Register</span>
+        </button>
+      </div>
+    </div>
+    <div id="ref-content">
+      <div style="font-size:14px;color:var(--text2);margin-bottom:8px" id="ref-link-label">Your referral link:</div>
+      <div class="ref-link-box" id="ref-link">goippro.com/join?ref=PARTNER2026</div>
+      <div class="copy-row">
+        <button class="btn btn-primary" onclick="copyRefLink()" style="flex:1">
+          <span id="btn-copy">📋 Copy</span>
+        </button>
+        <button class="btn btn-secondary" onclick="shareRefLink()" style="flex:1">
+          <span id="btn-share">📤 Share</span>
+        </button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label" id="lbl-referrals">Your referrals</div>
+          <div class="stat-value" id="ref-count">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" id="lbl-ref-earn">Ref. earnings</div>
+          <div class="stat-value text-teal" id="ref-earn-val">$0</div>
+          <div class="stat-sub">/month</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: SUPPORT -->
+  <div id="screen-support" class="screen">
+    <div class="section-title" id="supp-title">💬 Support</div>
+    <div id="faq-list"></div>
+    <hr class="divider">
+    <button class="btn btn-primary mb-12" onclick="openTgSupport()">
+      <span id="btn-chat-supp">💬 Chat with Support</span>
+    </button>
+    <button class="btn btn-secondary" onclick="openLink('https://goippro.com/earn/')">
+      <span id="btn-faq-site">🌐 Full FAQ at goippro.com</span>
+    </button>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="nav-bar">
+    <button class="nav-item active" id="nav-home" onclick="navigate('home')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span id="nav-home-label">Home</span>
+    </button>
+    <button class="nav-item" id="nav-earn" onclick="navigate('earn')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+      <span id="nav-earn-label">Earn</span>
+    </button>
+    <button class="nav-item" id="nav-dashboard" onclick="navigate('dashboard')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span id="nav-dashboard-label">Dashboard</span>
+    </button>
+    <button class="nav-item" id="nav-refer" onclick="navigate('refer')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"/></svg>
+      <span id="nav-refer-label">Refer</span>
+    </button>
+    <button class="nav-item" id="nav-support" onclick="navigate('support')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11 11-4.925 11-11S18.075 1 12 1zm-1 7h2v6h-2V8zm0 8h2v2h-2v-2z"/></svg>
+      <span id="nav-support-label">Help</span>
+    </button>
+  </nav>
+</div>
+
+<script>
+// ===== CONFIG =====
+const API_BASE = 'http://81.17.140.194/cc/api';
+
+// ===== STATE =====
+let state = {
+  lang: 'en',
+  slots: 4,
+  country: 'nigeria',
+  token: localStorage.getItem('goippro_token') || null,
+  user: JSON.parse(localStorage.getItem('goippro_user') || 'null'),
+  hasDevice: true,
+};
+
+// ===== RATE DATA =====
+const RATES = {
+  nigeria: [45, 55], ghana: [40, 50], kenya: [40, 50],
+  uae: [80, 120], saudi: [80, 120], bahrain: [70, 100],
+  indonesia: [40, 55], philippines: [40, 55],
+  brazil: [45, 60], mexico: [40, 50], colombia: [40, 50],
+  ivory_coast: [40, 50], senegal: [40, 50], cameroon: [38, 48],
+  morocco: [45, 55], egypt: [35, 45], ethiopia: [30, 40],
+  tanzania: [35, 45], mozambique: [30, 40], angola: [35, 45],
+  zambia: [30, 40], pakistan: [35, 50], bangladesh: [30, 45],
+};
+
+const COUNTRY_FLAGS = {
+  nigeria: '🇳🇬', ghana: '🇬🇭', kenya: '🇰🇪', uae: '🇦🇪', saudi: '🇸🇦',
+  bahrain: '🇧🇭', indonesia: '🇮🇩', philippines: '🇵🇭', brazil: '🇧🇷',
+  mexico: '🇲🇽', colombia: '🇨🇴', ivory_coast: '🇨🇮', senegal: '🇸🇳',
+  cameroon: '🇨🇲', morocco: '🇲🇦', egypt: '🇪🇬', ethiopia: '🇪🇹',
+  tanzania: '🇹🇿', mozambique: '🇲🇿', angola: '🇦🇴', zambia: '🇿🇲',
+  pakistan: '🇵🇰', bangladesh: '🇧🇩',
+};
+
+// ===== TRANSLATIONS =====
+const T = {
+  en: {
+    hero_title: 'Earn <span>$300–$800</span>/month', hero_sub: 'with your SIM cards + GoIP device',
+    feat1: 'Incoming calls only', feat1s: 'No outgoing, no spam risk',
+    feat2: 'SIM stays safe', feat2s: 'Grey traffic protection built-in',
+    feat3: 'Paid in USDT', feat3s: 'Monthly payouts, no limits',
+    btn_calc: '💰 Calculate my earnings', btn_howit: 'ℹ️ How it works',
+    calc_title: '💰 Earnings Calculator', slots_label: 'SIM Slots', country_label: 'Your Country',
+    monthly_label: 'Monthly income', per_month: 'per month · USDT',
+    btn_register: '📝 Register & Start', btn_learn: '🌐 Learn more at goippro.com',
+    auth_title: 'Join GoIPpro', tab_signup: 'Register', tab_login: 'Login',
+    lbl_name: 'Your Name', lbl_email: 'Email', lbl_country: 'Country',
+    lbl_phone: 'Phone / WhatsApp', lbl_password: 'Password',
+    lbl_device: 'Do you have a GoIP device?',
+    btn_signup: 'Create Account →', btn_login: 'Login →',
+    dash_greeting: '👋 Welcome back!',
+    lbl_balance: 'Balance', lbl_month: 'This month', lbl_earned: 'earned',
+    lbl_sims: 'Active SIMs', lbl_online: 'Online',
+    act_payout: 'Request Payout', act_payout_sub: 'Withdraw to USDT wallet',
+    act_refer: 'Refer a Friend', act_refer_sub: 'Earn 5% monthly bonus',
+    act_support: 'Support', act_logout: 'Logout',
+    dash_anon_title: 'Partner Dashboard', dash_anon_sub: 'Login to see your earnings and statistics',
+    dash_anon_btn: 'Login / Register',
+    ref_title: '🔗 Refer & Earn', ref_earn: 'Earn 5% bonus',
+    ref_desc: 'For every friend you invite, you earn 5% of their monthly payouts for 12 months!',
+    ref_link_label: 'Your referral link:',
+    btn_copy: '📋 Copy', btn_share: '📤 Share',
+    lbl_referrals: 'Your referrals', lbl_ref_earn: 'Ref. earnings',
+    supp_title: '💬 Support',
+    btn_chat_supp: '💬 Chat with Support', btn_faq_site: '🌐 Full FAQ at goippro.com',
+    nav_home: 'Home', nav_earn: 'Earn', nav_dashboard: 'Dashboard', nav_refer: 'Refer', nav_support: 'Help',
+    faq: [
+      { q: 'How to connect GoIP device?', a: 'Connect your GoIP to power and internet, configure with our ZTP link. Full guide at goippro.com/how-to-start/' },
+      { q: 'When do I get paid?', a: 'Payouts are processed monthly, between the 1st–5th of each month. Minimum payout: $50 USDT.' },
+      { q: 'My SIM is not working', a: 'Check the GoIP device LEDs. If the SIM slot shows no signal, reinsert the SIM. Contact support for remote diagnostics.' },
+      { q: 'How to withdraw USDT?', a: 'Go to Dashboard → Request Payout. Enter your TRC20 or ERC20 wallet address. Processing: 1–3 business days.' },
+      { q: 'Is this legal?', a: 'GoIPpro operates in grey telecom zones. Please verify local regulations. We do not support fraud or illegal activities.' },
+    ],
+    ref_login_msg: 'Login to get your referral link',
+  },
+  fr: {
+    hero_title: 'Gagnez <span>300–800 $</span>/mois', hero_sub: 'avec vos cartes SIM + appareil GoIP',
+    feat1: 'Appels entrants seulement', feat1s: 'Pas de spam, pas de risque',
+    feat2: 'SIM protégée', feat2s: 'Protection trafic gris intégrée',
+    feat3: 'Payé en USDT', feat3s: 'Paiements mensuels, sans limites',
+    btn_calc: '💰 Calculer mes revenus', btn_howit: 'ℹ️ Comment ça marche',
+    calc_title: '💰 Calculateur de Gains', slots_label: 'Slots SIM', country_label: 'Votre pays',
+    monthly_label: 'Revenu mensuel', per_month: 'par mois · USDT',
+    btn_register: '📝 S\'inscrire et commencer', btn_learn: '🌐 En savoir plus sur goippro.com',
+    auth_title: 'Rejoindre GoIPpro', tab_signup: 'S\'inscrire', tab_login: 'Connexion',
+    lbl_name: 'Votre nom', lbl_email: 'Email', lbl_country: 'Pays',
+    lbl_phone: 'Téléphone / WhatsApp', lbl_password: 'Mot de passe',
+    lbl_device: 'Avez-vous un appareil GoIP?',
+    btn_signup: 'Créer un compte →', btn_login: 'Se connecter →',
+    dash_greeting: '👋 Bon retour!',
+    lbl_balance: 'Solde', lbl_month: 'Ce mois', lbl_earned: 'gagné',
+    lbl_sims: 'SIMs actives', lbl_online: 'En ligne',
+    act_payout: 'Demander un paiement', act_payout_sub: 'Retrait vers wallet USDT',
+    act_refer: 'Parrainer un ami', act_refer_sub: 'Gagnez 5% de bonus mensuel',
+    act_support: 'Support', act_logout: 'Déconnexion',
+    dash_anon_title: 'Tableau de Bord', dash_anon_sub: 'Connectez-vous pour voir vos gains',
+    dash_anon_btn: 'Connexion / Inscription',
+    ref_title: '🔗 Parrainage', ref_earn: 'Gagnez 5% de bonus',
+    ref_desc: 'Pour chaque ami invité, vous gagnez 5% de ses paiements mensuels pendant 12 mois!',
+    ref_link_label: 'Votre lien de parrainage:',
+    btn_copy: '📋 Copier', btn_share: '📤 Partager',
+    lbl_referrals: 'Vos filleuls', lbl_ref_earn: 'Gains parrainage',
+    supp_title: '💬 Support',
+    btn_chat_supp: '💬 Chatter avec le support', btn_faq_site: '🌐 FAQ complète sur goippro.com',
+    nav_home: 'Accueil', nav_earn: 'Gagner', nav_dashboard: 'Tableau', nav_refer: 'Parrainer', nav_support: 'Aide',
+    faq: [
+      { q: 'Comment connecter l\'appareil GoIP?', a: 'Connectez votre GoIP à l\'alimentation et à internet, configurez avec notre lien ZTP. Guide complet sur goippro.com/how-to-start/' },
+      { q: 'Quand suis-je payé?', a: 'Les paiements sont traités mensuellement, entre le 1er et le 5e de chaque mois. Minimum: 50 $ USDT.' },
+      { q: 'Ma SIM ne fonctionne pas', a: 'Vérifiez les LEDs de l\'appareil GoIP. Si pas de signal, réinsérez la SIM. Contactez le support.' },
+      { q: 'Comment retirer USDT?', a: 'Tableau de bord → Demander un paiement. Entrez votre adresse TRC20 ou ERC20.' },
+      { q: 'Est-ce légal?', a: 'GoIPpro opère dans des zones de télécommunications grises. Vérifiez les réglementations locales.' },
+    ],
+    ref_login_msg: 'Connectez-vous pour obtenir votre lien de parrainage',
+  },
+  ar: {
+    rtl: true,
+    hero_title: 'اكسب <span>300–800 $</span> شهرياً', hero_sub: 'مع شرائح SIM وجهاز GoIP',
+    feat1: 'مكالمات واردة فقط', feat1s: 'لا مكالمات صادرة، لا مخاطر',
+    feat2: 'شريحة SIM آمنة', feat2s: 'حماية حركة المرور الرمادية',
+    feat3: 'الدفع بـ USDT', feat3s: 'مدفوعات شهرية بلا حدود',
+    btn_calc: '💰 احسب أرباحي', btn_howit: 'ℹ️ كيف يعمل',
+    calc_title: '💰 حاسبة الأرباح', slots_label: 'فتحات SIM', country_label: 'بلدك',
+    monthly_label: 'الدخل الشهري', per_month: 'شهرياً · USDT',
+    btn_register: '📝 سجل وابدأ', btn_learn: '🌐 اعرف أكثر على goippro.com',
+    auth_title: 'انضم إلى GoIPpro', tab_signup: 'التسجيل', tab_login: 'تسجيل الدخول',
+    lbl_name: 'اسمك', lbl_email: 'البريد الإلكتروني', lbl_country: 'البلد',
+    lbl_phone: 'الهاتف / واتساب', lbl_password: 'كلمة المرور',
+    lbl_device: 'هل لديك جهاز GoIP؟',
+    btn_signup: 'إنشاء حساب ←', btn_login: 'تسجيل الدخول ←',
+    dash_greeting: '👋 مرحباً بعودتك!',
+    lbl_balance: 'الرصيد', lbl_month: 'هذا الشهر', lbl_earned: 'مكتسب',
+    lbl_sims: 'شرائح SIM النشطة', lbl_online: 'متصل',
+    act_payout: 'طلب سحب', act_payout_sub: 'سحب إلى محفظة USDT',
+    act_refer: 'دعوة صديق', act_refer_sub: 'اكسب مكافأة 5% شهرياً',
+    act_support: 'الدعم', act_logout: 'تسجيل الخروج',
+    dash_anon_title: 'لوحة الشريك', dash_anon_sub: 'سجل دخولك لرؤية أرباحك',
+    dash_anon_btn: 'تسجيل الدخول / التسجيل',
+    ref_title: '🔗 أحل واكسب', ref_earn: 'اكسب 5% مكافأة',
+    ref_desc: 'لكل صديق تدعوه، تحصل على 5% من مدفوعاته الشهرية لمدة 12 شهراً!',
+    ref_link_label: 'رابط الإحالة الخاص بك:',
+    btn_copy: '📋 نسخ', btn_share: '📤 مشاركة',
+    lbl_referrals: 'إحالاتك', lbl_ref_earn: 'أرباح الإحالة',
+    supp_title: '💬 الدعم',
+    btn_chat_supp: '💬 تحدث مع الدعم', btn_faq_site: '🌐 الأسئلة الشائعة على goippro.com',
+    nav_home: 'الرئيسية', nav_earn: 'الأرباح', nav_dashboard: 'لوحة', nav_refer: 'إحالة', nav_support: 'مساعدة',
+    faq: [
+      { q: 'كيف أوصل جهاز GoIP؟', a: 'وصّل جهاز GoIP بالكهرباء والإنترنت، ثم اضبطه عبر رابط ZTP. دليل كامل على goippro.com/how-to-start/' },
+      { q: 'متى أحصل على الدفع؟', a: 'تتم معالجة المدفوعات شهرياً بين 1-5 من كل شهر. الحد الأدنى: 50 دولار USDT.' },
+      { q: 'شريحة SIM لا تعمل', a: 'تحقق من مصابيح جهاز GoIP. إذا لم يكن هناك إشارة، أعد إدخال الشريحة. تواصل مع الدعم.' },
+      { q: 'كيف أسحب USDT؟', a: 'لوحة القيادة ← طلب سحب. أدخل عنوان محفظتك TRC20 أو ERC20.' },
+      { q: 'هل هذا قانوني؟', a: 'يعمل GoIPpro في مناطق الاتصالات الرمادية. يرجى التحقق من اللوائح المحلية.' },
+    ],
+    ref_login_msg: 'سجل دخولك للحصول على رابط الإحالة',
+  },
+  es: {
+    hero_title: 'Gana <span>$300–$800</span>/mes', hero_sub: 'con tus tarjetas SIM + dispositivo GoIP',
+    feat1: 'Solo llamadas entrantes', feat1s: 'Sin salientes, sin riesgo de spam',
+    feat2: 'SIM protegida', feat2s: 'Protección de tráfico gris integrada',
+    feat3: 'Pagado en USDT', feat3s: 'Pagos mensuales, sin límites',
+    btn_calc: '💰 Calcular mis ganancias', btn_howit: 'ℹ️ Cómo funciona',
+    calc_title: '💰 Calculadora de Ingresos', slots_label: 'Ranuras SIM', country_label: 'Tu país',
+    monthly_label: 'Ingresos mensuales', per_month: 'por mes · USDT',
+    btn_register: '📝 Registrarse y empezar', btn_learn: '🌐 Más info en goippro.com',
+    auth_title: 'Únete a GoIPpro', tab_signup: 'Registrarse', tab_login: 'Iniciar sesión',
+    lbl_name: 'Tu nombre', lbl_email: 'Correo electrónico', lbl_country: 'País',
+    lbl_phone: 'Teléfono / WhatsApp', lbl_password: 'Contraseña',
+    lbl_device: '¿Tienes un dispositivo GoIP?',
+    btn_signup: 'Crear cuenta →', btn_login: 'Iniciar sesión →',
+    dash_greeting: '👋 ¡Bienvenido de vuelta!',
+    lbl_balance: 'Saldo', lbl_month: 'Este mes', lbl_earned: 'ganado',
+    lbl_sims: 'SIMs activas', lbl_online: 'En línea',
+    act_payout: 'Solicitar pago', act_payout_sub: 'Retiro a billetera USDT',
+    act_refer: 'Referir a un amigo', act_refer_sub: 'Gana 5% de bono mensual',
+    act_support: 'Soporte', act_logout: 'Cerrar sesión',
+    dash_anon_title: 'Panel del socio', dash_anon_sub: 'Inicia sesión para ver tus ganancias',
+    dash_anon_btn: 'Iniciar sesión / Registrarse',
+    ref_title: '🔗 Referir y Ganar', ref_earn: 'Gana 5% de bono',
+    ref_desc: '¡Por cada amigo que invites, ganas 5% de sus pagos mensuales durante 12 meses!',
+    ref_link_label: 'Tu enlace de referido:',
+    btn_copy: '📋 Copiar', btn_share: '📤 Compartir',
+    lbl_referrals: 'Tus referidos', lbl_ref_earn: 'Ganancias ref.',
+    supp_title: '💬 Soporte',
+    btn_chat_supp: '💬 Chatear con soporte', btn_faq_site: '🌐 FAQ completa en goippro.com',
+    nav_home: 'Inicio', nav_earn: 'Ganar', nav_dashboard: 'Panel', nav_refer: 'Referir', nav_support: 'Ayuda',
+    faq: [
+      { q: '¿Cómo conectar el dispositivo GoIP?', a: 'Conecta tu GoIP a la corriente e internet, configúralo con nuestro enlace ZTP. Guía completa en goippro.com/how-to-start/' },
+      { q: '¿Cuándo me pagan?', a: 'Los pagos se procesan mensualmente, entre el 1 y el 5 de cada mes. Mínimo: $50 USDT.' },
+      { q: 'Mi SIM no funciona', a: 'Revisa los LEDs del GoIP. Si no hay señal, réinserta la SIM. Contacta al soporte.' },
+      { q: '¿Cómo retirar USDT?', a: 'Panel → Solicitar pago. Ingresa tu dirección TRC20 o ERC20.' },
+      { q: '¿Es legal?', a: 'GoIPpro opera en zonas de telecomunicaciones grises. Verifica las regulaciones locales.' },
+    ],
+    ref_login_msg: 'Inicia sesión para obtener tu enlace de referido',
+  },
+  pt: {
+    hero_title: 'Ganhe <span>$300–$800</span>/mês', hero_sub: 'com seus SIMs + dispositivo GoIP',
+    feat1: 'Apenas chamadas recebidas', feat1s: 'Sem saída, sem risco de spam',
+    feat2: 'SIM protegido', feat2s: 'Proteção de tráfego cinza integrada',
+    feat3: 'Pago em USDT', feat3s: 'Pagamentos mensais, sem limites',
+    btn_calc: '💰 Calcular meus ganhos', btn_howit: 'ℹ️ Como funciona',
+    calc_title: '💰 Calculadora de Ganhos', slots_label: 'Slots de SIM', country_label: 'Seu país',
+    monthly_label: 'Renda mensal', per_month: 'por mês · USDT',
+    btn_register: '📝 Registrar e começar', btn_learn: '🌐 Saiba mais em goippro.com',
+    auth_title: 'Junte-se ao GoIPpro', tab_signup: 'Registrar', tab_login: 'Entrar',
+    lbl_name: 'Seu nome', lbl_email: 'E-mail', lbl_country: 'País',
+    lbl_phone: 'Telefone / WhatsApp', lbl_password: 'Senha',
+    lbl_device: 'Você tem um dispositivo GoIP?',
+    btn_signup: 'Criar conta →', btn_login: 'Entrar →',
+    dash_greeting: '👋 Bem-vindo de volta!',
+    lbl_balance: 'Saldo', lbl_month: 'Este mês', lbl_earned: 'ganho',
+    lbl_sims: 'SIMs ativos', lbl_online: 'Online',
+    act_payout: 'Solicitar pagamento', act_payout_sub: 'Saque para carteira USDT',
+    act_refer: 'Indicar amigo', act_refer_sub: 'Ganhe 5% de bônus mensal',
+    act_support: 'Suporte', act_logout: 'Sair',
+    dash_anon_title: 'Painel do Parceiro', dash_anon_sub: 'Faça login para ver seus ganhos',
+    dash_anon_btn: 'Entrar / Registrar',
+    ref_title: '🔗 Indicar e Ganhar', ref_earn: 'Ganhe 5% de bônus',
+    ref_desc: 'Para cada amigo que você indicar, você ganha 5% dos pagamentos mensais deles por 12 meses!',
+    ref_link_label: 'Seu link de indicação:',
+    btn_copy: '📋 Copiar', btn_share: '📤 Compartilhar',
+    lbl_referrals: 'Suas indicações', lbl_ref_earn: 'Ganhos de indicação',
+    supp_title: '💬 Suporte',
+    btn_chat_supp: '💬 Conversar com suporte', btn_faq_site: '🌐 FAQ completo em goippro.com',
+    nav_home: 'Início', nav_earn: 'Ganhar', nav_dashboard: 'Painel', nav_refer: 'Indicar', nav_support: 'Ajuda',
+    faq: [
+      { q: 'Como conectar o dispositivo GoIP?', a: 'Conecte seu GoIP à energia e internet, configure com nosso link ZTP. Guia completo em goippro.com/how-to-start/' },
+      { q: 'Quando recebo o pagamento?', a: 'Pagamentos são processados mensalmente, entre os dias 1-5. Mínimo: $50 USDT.' },
+      { q: 'Meu SIM não está funcionando', a: 'Verifique os LEDs do GoIP. Sem sinal: reinsira o SIM. Entre em contato com o suporte.' },
+      { q: 'Como sacar USDT?', a: 'Painel → Solicitar pagamento. Informe seu endereço TRC20 ou ERC20.' },
+      { q: 'É legal?', a: 'GoIPpro opera em zonas de telecomunicações cinzas. Verifique as regulamentações locais.' },
+    ],
+    ref_login_msg: 'Faça login para obter seu link de indicação',
+  },
+  id: {
+    hero_title: 'Hasilkan <span>$300–$800</span>/bulan', hero_sub: 'dengan kartu SIM + perangkat GoIP',
+    feat1: 'Hanya panggilan masuk', feat1s: 'Tidak ada keluar, tidak ada risiko spam',
+    feat2: 'SIM tetap aman', feat2s: 'Perlindungan trafik abu-abu bawaan',
+    feat3: 'Dibayar dalam USDT', feat3s: 'Pembayaran bulanan, tanpa batas',
+    btn_calc: '💰 Hitung penghasilan saya', btn_howit: 'ℹ️ Cara kerjanya',
+    calc_title: '💰 Kalkulator Penghasilan', slots_label: 'Slot SIM', country_label: 'Negara Anda',
+    monthly_label: 'Pendapatan bulanan', per_month: 'per bulan · USDT',
+    btn_register: '📝 Daftar & Mulai', btn_learn: '🌐 Pelajari lebih lanjut di goippro.com',
+    auth_title: 'Bergabung GoIPpro', tab_signup: 'Daftar', tab_login: 'Masuk',
+    lbl_name: 'Nama Anda', lbl_email: 'Email', lbl_country: 'Negara',
+    lbl_phone: 'Telepon / WhatsApp', lbl_password: 'Kata sandi',
+    lbl_device: 'Apakah Anda punya perangkat GoIP?',
+    btn_signup: 'Buat Akun →', btn_login: 'Masuk →',
+    dash_greeting: '👋 Selamat datang kembali!',
+    lbl_balance: 'Saldo', lbl_month: 'Bulan ini', lbl_earned: 'diperoleh',
+    lbl_sims: 'SIM Aktif', lbl_online: 'Online',
+    act_payout: 'Minta Pembayaran', act_payout_sub: 'Tarik ke dompet USDT',
+    act_refer: 'Ajak Teman', act_refer_sub: 'Dapatkan bonus 5% per bulan',
+    act_support: 'Dukungan', act_logout: 'Keluar',
+    dash_anon_title: 'Dasbor Mitra', dash_anon_sub: 'Masuk untuk melihat penghasilan Anda',
+    dash_anon_btn: 'Masuk / Daftar',
+    ref_title: '🔗 Ajak & Dapatkan', ref_earn: 'Dapatkan bonus 5%',
+    ref_desc: 'Untuk setiap teman yang Anda ajak, Anda mendapatkan 5% dari pembayaran bulanan mereka selama 12 bulan!',
+    ref_link_label: 'Link referral Anda:',
+    btn_copy: '📋 Salin', btn_share: '📤 Bagikan',
+    lbl_referrals: 'Referral Anda', lbl_ref_earn: 'Pendapatan referral',
+    supp_title: '💬 Dukungan',
+    btn_chat_supp: '💬 Chat dengan dukungan', btn_faq_site: '🌐 FAQ lengkap di goippro.com',
+    nav_home: 'Beranda', nav_earn: 'Penghasilan', nav_dashboard: 'Dasbor', nav_refer: 'Ajak', nav_support: 'Bantuan',
+    faq: [
+      { q: 'Cara menghubungkan perangkat GoIP?', a: 'Hubungkan GoIP ke listrik dan internet, konfigurasikan dengan link ZTP kami. Panduan lengkap di goippro.com/how-to-start/' },
+      { q: 'Kapan saya dibayar?', a: 'Pembayaran diproses bulanan, antara tanggal 1-5. Minimum: $50 USDT.' },
+      { q: 'SIM saya tidak berfungsi', a: 'Periksa LED perangkat GoIP. Jika tidak ada sinyal, masukkan kembali SIM. Hubungi dukungan.' },
+      { q: 'Cara menarik USDT?', a: 'Dasbor → Minta Pembayaran. Masukkan alamat TRC20 atau ERC20 Anda.' },
+      { q: 'Apakah ini legal?', a: 'GoIPpro beroperasi di zona telekomunikasi abu-abu. Harap verifikasi peraturan setempat.' },
+    ],
+    ref_login_msg: 'Masuk untuk mendapatkan link referral Anda',
+  },
+};
+
+// ===== TELEGRAM INIT =====
+let tg = window.Telegram && window.Telegram.WebApp;
+let tgUser = null;
+
+function initTelegram() {
+  if (tg) {
+    tg.ready();
+    tg.expand();
+    tgUser = tg.initDataUnsafe && tg.initDataUnsafe.user;
+    // Detect theme
+    if (tg.colorScheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    // Detect language
+    if (tgUser && tgUser.language_code) {
+      const lc = tgUser.language_code.toLowerCase().split('-')[0];
+      if (T[lc]) state.lang = lc;
+    }
+    // Pre-fill name from TG
+    if (tgUser && tgUser.first_name) {
+      const inp = document.getElementById('inp-name');
+      if (inp) inp.value = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
+    }
+  }
+}
+
+// ===== TRANSLATIONS APPLY =====
+function applyLang() {
+  const t = T[state.lang] || T.en;
+  document.getElementById('lang-badge').textContent = state.lang.toUpperCase();
+  // RTL
+  if (t.rtl) { document.body.setAttribute('dir', 'rtl'); document.documentElement.lang = 'ar'; }
+  else { document.body.removeAttribute('dir'); document.documentElement.lang = state.lang; }
+  // Map translations to elements
+  const map = {
+    'hero-title': t.hero_title, 'hero-sub': t.hero_sub,
+    'feat1': t.feat1, 'feat1s': t.feat1s, 'feat2': t.feat2, 'feat2s': t.feat2s,
+    'feat3': t.feat3, 'feat3s': t.feat3s,
+    'btn-calc-text': t.btn_calc, 'btn-howit-text': t.btn_howit,
+    'calc-title': t.calc_title, 'slots-label': t.slots_label, 'country-label': t.country_label,
+    'monthly-label': t.monthly_label, 'per-month-text': t.per_month,
+    'btn-register-text': t.btn_register, 'btn-learn-text': t.btn_learn,
+    'auth-title': t.auth_title,
+    'tab-signup': t.tab_signup, 'tab-login': t.tab_login,
+    'lbl-name': t.lbl_name, 'lbl-email': t.lbl_email, 'lbl-country': t.lbl_country,
+    'lbl-phone': t.lbl_phone, 'lbl-password': t.lbl_password, 'lbl-device': t.lbl_device,
+    'btn-signup-text': t.btn_signup,
+    'dash-greeting': t.dash_greeting,
+    'lbl-balance': t.lbl_balance, 'lbl-this-month': t.lbl_month, 'lbl-earned': t.lbl_earned,
+    'lbl-sims': t.lbl_sims, 'lbl-online': t.lbl_online,
+    'act-payout': t.act_payout, 'act-payout-sub': t.act_payout_sub,
+    'act-refer': t.act_refer, 'act-refer-sub': t.act_refer_sub,
+    'act-support': t.act_support, 'act-logout': t.act_logout,
+    'dash-anon-title': t.dash_anon_title, 'dash-anon-sub': t.dash_anon_sub, 'dash-anon-btn': t.dash_anon_btn,
+    'ref-title': t.ref_title, 'ref-earn': t.ref_earn, 'ref-desc': t.ref_desc,
+    'ref-link-label': t.ref_link_label,
+    'btn-copy': t.btn_copy, 'btn-share': t.btn_share,
+    'lbl-referrals': t.lbl_referrals, 'lbl-ref-earn': t.lbl_ref_earn,
+    'supp-title': t.supp_title,
+    'btn-chat-supp': t.btn_chat_supp, 'btn-faq-site': t.btn_faq_site,
+    'nav-home-label': t.nav_home, 'nav-earn-label': t.nav_earn,
+    'nav-dashboard-label': t.nav_dashboard, 'nav-refer-label': t.nav_refer, 'nav-support-label': t.nav_support,
+  };
+  Object.entries(map).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val !== undefined) el.innerHTML = val;
+  });
+  // Build FAQ
+  buildFaq(t.faq || []);
+  // Set country flag from detected lang
+  const flagMap = { en: '🌍', fr: '🌍', ar: '🌍', es: '🌎', pt: '🌎', id: '🇮🇩' };
+  document.getElementById('hero-flag').textContent = flagMap[state.lang] || '🌍';
+}
+
+// ===== FAQ =====
+function buildFaq(faqs) {
+  const list = document.getElementById('faq-list');
+  list.innerHTML = '';
+  faqs.forEach((f, i) => {
+    const item = document.createElement('div');
+    item.className = 'faq-item';
+    item.innerHTML = `
+      <div class="faq-question" onclick="toggleFaq(${i})">
+        <span>${f.q}</span>
+        <span class="faq-chevron" id="faq-chev-${i}">▾</span>
+      </div>
+      <div class="faq-answer" id="faq-ans-${i}">${f.a}</div>
+    `;
+    list.appendChild(item);
+  });
+}
+function toggleFaq(i) {
+  const ans = document.getElementById('faq-ans-' + i);
+  const chev = document.getElementById('faq-chev-' + i);
+  ans.classList.toggle('open');
+  chev.classList.toggle('open');
+  haptic();
+}
+
+// ===== NAVIGATION =====
+let currentScreen = 'home';
+function navigate(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  const navEl = document.getElementById('nav-' + screen);
+  if (navEl) navEl.classList.add('active');
+  currentScreen = screen;
+  haptic();
+  if (screen === 'dashboard') loadDashboard();
+  if (screen === 'refer') loadReferral();
+  window.scrollTo(0, 0);
+}
+
+// ===== CALCULATOR =====
+function selectSlots(n, el) {
+  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  state.slots = n;
+  calcEarnings();
+  haptic();
+}
+function calcEarnings() {
+  const country = document.getElementById('calc-country').value;
+  state.country = country;
+  const rate = RATES[country] || [40, 55];
+  const min = rate[0] * state.slots;
+  const max = rate[1] * state.slots;
+  document.getElementById('earnings-amount').textContent = '$' + min + ' – $' + max;
+}
+
+// ===== AUTH =====
+function switchTab(tab) {
+  document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  haptic();
+}
+function selectDevice(yes) {
+  state.hasDevice = yes;
+  document.getElementById('radio-yes').classList.toggle('active', yes);
+  document.getElementById('radio-no').classList.toggle('active', !yes);
+  haptic();
+}
+
+async function doSignup() {
+  const name = document.getElementById('inp-name').value.trim();
+  const email = document.getElementById('inp-email').value.trim();
+  const phone = document.getElementById('inp-phone').value.trim();
+  const password = document.getElementById('inp-password').value;
+  const country = document.getElementById('inp-country').value;
+  const errEl = document.getElementById('signup-error');
+  errEl.style.display = 'none';
+  if (!email || !password || password.length < 8) {
+    errEl.textContent = 'Please enter a valid email and password (8+ chars).';
+    errEl.style.display = 'block';
+    return;
+  }
+  const btn = document.getElementById('btn-signup');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div>';
+  try {
+    const res = await fetch(API_BASE + '/auth/register-partner', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ name: name || email.split('@')[0], email, password }),
+    });
+    const data = await res.json();
+    if (res.ok && data.token) {
+      state.token = data.token;
+      state.user = data.user;
+      localStorage.setItem('goippro_token', data.token);
+      localStorage.setItem('goippro_user', JSON.stringify(data.user));
+      showConfirmation({ name, country, phone });
+    } else {
+      errEl.textContent = data.message || 'Registration failed. Try a different email.';
+      errEl.style.display = 'block';
+    }
+  } catch(e) {
+    errEl.textContent = 'Connection error. Please try again.';
+    errEl.style.display = 'block';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<span id="btn-signup-text">' + (T[state.lang]?.btn_signup || 'Create Account →') + '</span>';
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  if (!email || !password) { errEl.textContent = 'Enter email and password.'; errEl.style.display = 'block'; return; }
+  const btn = document.getElementById('btn-login');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div>';
+  try {
+    const res = await fetch(API_BASE + '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (res.ok && data.token) {
+      state.token = data.token;
+      state.user = data.user;
+      localStorage.setItem('goippro_token', data.token);
+      localStorage.setItem('goippro_user', JSON.stringify(data.user));
+      navigate('dashboard');
+    } else {
+      errEl.textContent = data.message || 'Invalid credentials.';
+      errEl.style.display = 'block';
+    }
+  } catch(e) {
+    errEl.textContent = 'Connection error. Please try again.';
+    errEl.style.display = 'block';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<span>Login →</span>';
+}
+
+function doLogout() {
+  state.token = null;
+  state.user = null;
+  localStorage.removeItem('goippro_token');
+  localStorage.removeItem('goippro_user');
+  navigate('home');
+}
+
+// ===== CONFIRMATION (after signup) =====
+function showConfirmation(data) {
+  const screen = document.getElementById('screen-register');
+  screen.innerHTML = `
+    <div style="text-align:center;padding:40px 0">
+      <div style="font-size:64px;margin-bottom:16px">✅</div>
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px;color:var(--teal)">You're registered!</div>
+      <div style="color:var(--text2);margin-bottom:32px">Our manager will contact you within 24 hours via <strong>${data.phone || 'your phone'}</strong></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <button class="btn btn-primary" onclick="openLink('https://goippro.com/how-to-start/')">📺 How to connect GoIP</button>
+        <button class="btn btn-secondary" onclick="openLink('https://goippro.com/earn/')">🛒 Buy GoIP device</button>
+        <button class="btn btn-outline" onclick="navigate('support')">💬 Ask support</button>
+        <button class="btn btn-secondary" onclick="navigate('refer')">🔗 Get referral link</button>
+      </div>
+    </div>
+  `;
+  navigate('register');
+}
+
+// ===== DASHBOARD =====
+async function loadDashboard() {
+  if (!state.token) {
+    document.getElementById('dash-loading').style.display = 'none';
+    document.getElementById('dash-content').style.display = 'none';
+    document.getElementById('dash-anon').style.display = 'block';
+    return;
+  }
+  document.getElementById('dash-loading').style.display = 'block';
+  document.getElementById('dash-content').style.display = 'none';
+  document.getElementById('dash-anon').style.display = 'none';
+  try {
+    const res = await fetch(API_BASE + '/partner/me', {
+      headers: { 'Authorization': 'Bearer ' + state.token, 'Accept': 'application/json' },
+    });
+    if (res.status === 401) { doLogout(); return; }
+    const data = await res.json();
+    const user = data.user || {};
+    document.getElementById('dash-greeting').textContent = T[state.lang]?.dash_greeting || '👋 Welcome back!';
+    document.getElementById('dash-name').textContent = user.name || user.email || 'Partner';
+    // Balance — not in API yet, show placeholder
+    document.getElementById('dash-balance').textContent = '—';
+    document.getElementById('dash-month').textContent = '—';
+    document.getElementById('dash-sims').textContent = '— / —';
+    document.getElementById('dash-since').textContent = 'Partner';
+    document.getElementById('dash-loading').style.display = 'none';
+    document.getElementById('dash-content').style.display = 'block';
+  } catch(e) {
+    document.getElementById('dash-loading').innerHTML = '<div style="color:var(--text2)">Connection error</div>';
+  }
+}
+
+// ===== REFERRAL =====
+function loadReferral() {
+  if (!state.token) {
+    document.getElementById('ref-content').style.display = 'none';
+    document.getElementById('ref-auth-needed').style.display = 'block';
+    return;
+  }
+  document.getElementById('ref-auth-needed').style.display = 'none';
+  document.getElementById('ref-content').style.display = 'block';
+  const email = state.user?.email || 'partner';
+  const refCode = email.split('@')[0].toUpperCase().replace(/[^A-Z0-9]/g,'') + '2026';
+  document.getElementById('ref-link').textContent = 'goippro.com/join?ref=' + refCode;
+}
+
+function copyRefLink() {
+  const link = document.getElementById('ref-link').textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(link).then(() => {
+      const btn = document.getElementById('btn-copy');
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => { btn.textContent = T[state.lang]?.btn_copy || '📋 Copy'; }, 2000);
+    });
+  }
+  haptic();
+}
+function shareRefLink() {
+  const link = 'https://' + document.getElementById('ref-link').textContent;
+  if (tg) tg.openLink(link);
+  else if (navigator.share) navigator.share({ url: link, title: 'GoIPpro Partner Program' });
+  haptic();
+}
+
+// ===== PAYOUT =====
+function requestPayout() {
+  if (tg) {
+    tg.showAlert('Payout feature coming soon! Contact support: @goippro_support');
+  } else {
+    alert('Payout feature coming soon! Contact support: @goippro_support');
+  }
+  haptic();
+}
+
+// ===== UTILITIES =====
+function openLink(url) {
+  if (tg) tg.openLink(url);
+  else window.open(url, '_blank');
+}
+function openTgSupport() {
+  if (tg) tg.openLink('https://t.me/goippro_support');
+  else window.open('https://t.me/goippro_support', '_blank');
+  haptic();
+}
+function haptic() {
+  if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  initTelegram();
+  applyLang();
+  calcEarnings();
+  // If already logged in, show dashboard as default
+  if (state.token) {
+    navigate('dashboard');
+  }
+});
+</script>
+</body>
+</html>
