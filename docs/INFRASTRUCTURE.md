@@ -169,3 +169,52 @@ Organization: [goippro-main](https://github.com/goippro-main)
 ---
 
 *Документ автоматически обновляется. Хранить актуальную версию здесь и на VPS в `/home/administrator/shared/INFRASTRUCTURE.md`*
+
+---
+
+## FreeSWITCH Architecture
+
+**Updated:** 2026-04-09
+
+### PRIMARY — VPS .198 (81.17.140.198)
+- Docker container: `freeswitch`
+- SIP port: **5060**
+- ESL port: **8021**, password: `ClueCon`
+- Dialplan: `/home/administrator/newfreeswith/fs_config/default.xml`
+- Extensions:
+  - `goip8_business` → `voice_mode=support` → socket `127.0.0.1:8090`
+  - `goip4_experiments` → `voice_mode=alarm` → socket `127.0.0.1:8090`
+
+### BACKUP — VPS .194 (81.17.140.194)
+- Docker container: `freeswitch-backup`
+- SIP port: **5080**
+- ESL port: **8022**, password: `ClueCon`
+- Compose: `/home/administrator/freeswitch-backup/docker-compose.yml`
+- Dialplan: `/home/administrator/freeswitch-backup/conf/default.xml`
+- Activates automatically when GoIP loses connection to PRIMARY
+
+### Failover Scheme
+```
+GoIP8 (192.168.88.253)
+  ├── SIP Server 1: 81.17.140.198:5060  ← PRIMARY
+  └── SIP Server 2: 81.17.140.194:5080  ← BACKUP (failover timeout: 30 sec)
+```
+GoIP8 настраивается в веб-интерфейсе (192.168.88.253) через Mac-туннель.
+
+### Voice Agent (unified)
+- Port: **8090**
+- PM2: `voice-agent`
+- Modes: `alarm` (Grok-3-fast) / `support` (Claude Haiku)
+- Dispatch: через channel variable `voice_mode=alarm|support`
+
+### Management
+```bash
+# PRIMARY (VPS .198) — через Shell MCP tool 14
+docker exec freeswitch fs_cli -x "reloadxml"
+docker exec freeswitch fs_cli -x "status"
+
+# BACKUP (VPS .194)
+sshpass -p 'ezy7u2ffiFNR' ssh administrator@81.17.140.194
+sudo docker exec freeswitch-backup fs_cli -H 127.0.0.1 -P 8022 -p ClueCon -x "status"
+sudo docker logs freeswitch-backup --tail 50
+```
